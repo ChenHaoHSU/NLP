@@ -111,5 +111,4 @@ def main():
         print('answer:',answer)
 
 if __name__ == '__main__':
-    print(math.exp(1))    
     main()
