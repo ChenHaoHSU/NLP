@@ -29,22 +29,48 @@ def derivative2(x):
     return (24 * math.exp(-2 * x)) + 4
 
 ##########################
+# fibonacci sequence
+##########################
+
+def get_n(l):
+    ret = []
+    print('l=', l)
+    for i in range(1000):
+        if i == 0 or i == 1:
+            ret.append(1)
+        elif ret[-1] > l:
+            return len(ret) - 1
+        else:
+            ret.append(ret[-1] + ret[-2])
+    return ret
+
+def fb_seq(n):
+    ret = []
+    for i in range(n):
+        if i == 0 or i == 1:
+            ret.append(1)
+        else:
+            ret.append(ret[-1] + ret[-2])
+    return ret
+
+##########################
 # Solvers
 ##########################
 
 def fibonacci():
     print('Solved by Fibonacci method')
-    alpha = 0.618
     a_init, b_init = get_init_interval()
-    lumbda_init = a_init + ((1 - alpha) * (b_init - a_init))
-    mu_init = a_init + (alpha * (b_init - a_init))
+    n = get_n( (b_init - a_init) / target_range())
+    print(n)
+    F = fb_seq(n)
+    print(F)
+
+    lumbda_init = a_init + ((F[n-2] / F[n]) * (b_init - a_init))
+    mu_init = a_init + ((F[n-1] / F[n]) * (b_init - a_init))
     a_history, b_history = [a_init], [b_init]
     lumbda_history, mu_history = [lumbda_init], [mu_init]
 
-    while b_history[-1] - a_history[-1] >= target_range():
-        a_k, b_k = a_history[-1], b_history[-1]
-        assert len(a_history) == len(b_history)
-        assert len(lumbda_history) == len(mu_history)
+    for k in range(n):
         if func(lumbda_history[-1]) > func(mu_history[-1]):
             a_history.append(lumbda_history[-1])
             b_history.append(b_history[-1])
