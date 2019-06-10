@@ -27,25 +27,40 @@ def derivative2(x):
 ##########################
 
 def dichotomous():
-    print('Solved by dichotomous')
+    print('Solved by dichotomous search method')
     epsilon = 0.001
     a_init, b_init = get_init_interval()
     a_history, b_history = [a_init], [b_init]
-
+    lumbda_history, mu_history = [], []
     while b_history[-1] - a_history[-1] >= target_range():
         a_k, b_k = a_history[-1], b_history[-1]
         lumbda = ((a_k + b_k) / 2) - epsilon
         mu = ((a_k + b_k) / 2) + epsilon
+        lumbda_history.append(lumbda)
+        mu_history.append(mu)
         if func(lumbda) < func(mu):
             a_history.append(a_k)
             b_history.append(mu)
         else:
             a_history.append(lumbda)
             b_history.append(b_k)
+
+    print('{:>11} {:>12} {:>12} {:>12} {:>12} {:>15} {:>12}'.format(\
+          'Iteration_k', 'a_k', 'b_k', 'lumbda_k', 'mu_k', 'theta(lumbda_k)', 'theta(mu_k)'))
+    for i, (a, b) in enumerate(zip(a_history, b_history)):
+        if i == len(a_history) - 1:
+            print('{:>11} {:12.3f} {:12.3f} {:<6} {:<6} {:<6} {:<6}'.format(\
+                i+1, a, b, '', '', '', ''))
+        else:
+            print('{:>11} {:12.3f} {:12.3f} {:12.3f} {:12.3f} {:15.3f} {:12.3f}'.format(\
+                i+1, a, b, lumbda_history[i], mu_history[i], func(lumbda_history[i]), func(mu_history[i])))
+    print('Answer:')
+    print('Uncertainty interval: [{:.5f}, {:.5f}]'.format(a_history[-1], b_history[-1]))
+    print('Minimum: {:.7f}'.format( func((a_history[-1] + b_history[-1]) / 2 )))
     return a_history[-1], b_history[-1]
 
 def golden():
-    print('Solved by golden')
+    print('Solved by golden section method')
     alpha = 0.618
     a_init, b_init = get_init_interval()
     lumbda_init = a_init + ((1 - alpha) * (b_init - a_init))
@@ -67,27 +82,54 @@ def golden():
             b_history.append(mu_history[-1])
             mu_history.append(lumbda_history[-1])
             lumbda_history.append((alpha * a_history[-1]) + ((1 - alpha) * b_history[-1]))
+    print('{:>11} {:>12} {:>12} {:>12} {:>12} {:>15} {:>12}'.format(\
+          'Iteration_k', 'a_k', 'b_k', 'lumbda_k', 'mu_k', 'theta(lumbda_k)', 'theta(mu_k)'))
+    for i, (a, b) in enumerate(zip(a_history, b_history)):
+        if i == len(a_history) - 1:
+            print('{:>11} {:12.3f} {:12.3f} {:<6} {:<6} {:<6} {:<6}'.format(\
+                i+1, a, b, '', '', '', ''))
+        else:
+            print('{:>11} {:12.3f} {:12.3f} {:12.3f} {:12.3f} {:15.3f} {:12.3f}'.format(\
+                i+1, a, b, lumbda_history[i], mu_history[i], func(lumbda_history[i]), func(mu_history[i])))
+    print('Answer:')
+    print('Uncertainty interval: [{:.5f}, {:.5f}]'.format(a_history[-1], b_history[-1]))
+    print('Minimum: {:.7f}'.format( func((a_history[-1] + b_history[-1]) / 2 )))
     return a_history[-1], b_history[-1]
 
 def bisection():
-    print('Solved by bisection')
+    print('Solved by bisection search method')
     k = 1
-    n = 100
+    n = 39
     a_init, b_init = get_init_interval()
     a_history, b_history = [a_init], [b_init]
+    lumbda_history = []
     while k <= n:
         k += 1
-        lumbda_history = [(a_history[-1] + b_history[-1]) / 2]
+        lumbda_history.append((a_history[-1] + b_history[-1]) / 2)
         if derivative(lumbda_history[-1]) > 0:
             a_history.append(a_history[-1])
             b_history.append(lumbda_history[-1])
         else:
             a_history.append(lumbda_history[-1])
             b_history.append(b_history[-1])
+    print('{:>11} {:>12} {:>12} {:>12} {:>16}'.format(\
+          'Iteration_k', 'a_k', 'b_k', 'lumbda_k', 'theta\'(lumbda_k)'))
+    for i, (a, b) in enumerate(zip(a_history, b_history)):
+        if i == 6: print('...')
+        if i >= 6 and i <= n - 6: continue
+        if i == len(a_history) - 1:
+            print('{:>11} {:12.3f} {:12.3f} {:<6} {:<6}'.format(\
+                i+1, a, b, '', '', '', ''))
+        else:
+            print('{:>11} {:12.3f} {:12.3f} {:12.3f} {:16.10f}'.format(\
+                i+1, a, b, lumbda_history[i], derivative(lumbda_history[i])))
+    print('Answer:')
+    print('Uncertainty interval: [{:.5f}, {:.5f}]'.format(a_history[-1], b_history[-1]))
+    print('Minimum: {:.7f}'.format( func((a_history[-1] + b_history[-1]) / 2 )))
     return a_history[-1], b_history[-1]
 
 def newton():
-    print('Solved by newton')
+    print('Solved by Newton\'s method')
     lumbda_init = 1
     epsilon = 0.001
     lumbda_history = [lumbda_init]
@@ -98,6 +140,16 @@ def newton():
         lumbda_history.append(lumbda_current - (derivative(lumbda_current) / derivative2(lumbda_current)))
         if abs(lumbda_history[-1] - lumbda_history[-2]) < epsilon:
             break
+    print('{:>11} {:>12} {:>16} {:>17} {:>12}'.format(\
+          'Iteration_k', 'lumbda_k', 'theta\'(lumbda_k)', 'theta\'\'(lumbda_k)',  'lumbda_(k+1)'))
+    for i, lumbda in enumerate(lumbda_history):
+        if i == len(lumbda_history) - 1: 
+            continue
+        else:
+            print('{:>11} {:12.4f} {:16.4f} {:17.4f} {:12.4f}'.format(\
+                i+1, lumbda, derivative(lumbda), derivative2(lumbda), lumbda_history[i+1]))
+    print('Answer:')
+    print('Minimum: {:.7f}'.format( func(lumbda_history[-1])))
     return lumbda_history[-1]
 
 ##########################
