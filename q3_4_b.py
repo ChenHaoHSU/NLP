@@ -57,11 +57,11 @@ def bisection():
           'Iteration_k', 'a_k', 'b_k', 'lumbda_k', 'theta\'(lumbda_k)'))
     for i, (a, b) in enumerate(zip(a_history, b_history)):
         if i == len(a_history) - 1:
-            print('{:>11} {:12.3f} {:12.3f} {:<6} {:<6}'.format(\
+            print('{:>11} {:12.6f} {:12.6f} {:<6} {:<6}'.format(\
                 i+1, a, b, '', '', '', ''))
         else:
-            print('{:>11} {:12.3f} {:12.3f} {:12.3f} {:18.11} {:18.11}'.format(\
-                i+1, a, b, lumbda_history[i], derivative(lumbda_history[i]), func(lumbda_history[i])))
+            print('{:>11} {:12.6f} {:12.6f} {:12.6f} {:18.11}'.format(\
+                i+1, a, b, lumbda_history[i], derivative(lumbda_history[i])))
     print('Answer:')
     print('Uncertainty interval: [{:.5f}, {:.5f}]'.format(a_history[-1], b_history[-1]))
     print('Minimum theta(lumbda): {:.7f} when lumbda = {:.7f}'.format( func((a_history[-1] + b_history[-1]) / 2 ), (a_history[-1] + b_history[-1]) / 2))

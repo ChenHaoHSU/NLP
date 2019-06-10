@@ -56,7 +56,7 @@ def golden():
             print('{:>11} {:12.6f} {:12.6f} {:<6} {:<6} {:<6} {:<6}'.format(\
                 i+1, a, b, '', '', '', ''))
         else:
-            print('{:>11} {:12.6f} {:12.6f} {:12.3f} {:12.3f} {:15.3f} {:12.3f}'.format(\
+            print('{:>11} {:12.6f} {:12.6f} {:12.6f} {:12.6f} {:15.6f} {:12.6f}'.format(\
                 i+1, a, b, lumbda_history[i], mu_history[i], func(lumbda_history[i]), func(mu_history[i])))
     print('Answer:')
     print('Uncertainty interval: [{:.5f}, {:.5f}]'.format(a_history[-1], b_history[-1]))
